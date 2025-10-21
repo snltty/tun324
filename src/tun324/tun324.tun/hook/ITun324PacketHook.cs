@@ -7,15 +7,15 @@
     {
         public string Name { get; }
 
-        public LinkerTunPacketHookLevel ReadLevel { get; }
-        public LinkerTunPacketHookLevel WriteLevel { get; }
+        public Tun324TunPacketHookLevel ReadLevel { get; }
+        public Tun324TunPacketHookLevel WriteLevel { get; }
 
         /// <summary>
         /// 从网卡读取到数据包后,flags 默认带 next send
         /// </summary>
         /// <param name="packet"></param>
         /// <returns></returns>
-        public (LinkerTunPacketHookFlags add, LinkerTunPacketHookFlags del) Read(ReadOnlyMemory<byte> packet);
+        public (Tun324TunPacketHookFlags add, Tun324TunPacketHookFlags del) Read(ReadOnlyMemory<byte> packet);
         /// <summary>
         /// 写入网卡前, flasgs 默认带 next write
         /// </summary>
@@ -23,11 +23,11 @@
         /// <param name="originDstIp"></param>
         /// <param name="srcId"></param>
         /// <returns>next</returns>
-        public ValueTask<(LinkerTunPacketHookFlags add, LinkerTunPacketHookFlags del)> WriteAsync(ReadOnlyMemory<byte> packet, uint originDstIp, string srcId);
+        public ValueTask<(Tun324TunPacketHookFlags add, Tun324TunPacketHookFlags del)> WriteAsync(ReadOnlyMemory<byte> packet, uint originDstIp, string srcId);
     }
 
     [Flags]
-    public enum LinkerTunPacketHookFlags : byte
+    public enum Tun324TunPacketHookFlags : byte
     {
         None = 0,
 
@@ -46,7 +46,7 @@
     /// <summary>
     /// 回调处理级别
     /// </summary>
-    public enum LinkerTunPacketHookLevel
+    public enum Tun324TunPacketHookLevel
     {
         /// <summary>
         /// 最低的，也是最早执行的，不要用这个

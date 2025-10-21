@@ -17,7 +17,7 @@ namespace tun324.tun.proxy
                 {
                     proxys[i].Parse(proxy);
                     currentProxy = proxys[i];
-                    LoggerHelper.Instance.Error($"[Proxy] current proxy {proxy}->[{currentProxy.Name}]!");
+                    LoggerHelper.Instance.Debug($"[Proxy] current proxy {proxy}->[{currentProxy.Name}]!");
                     return;
                 }
             }

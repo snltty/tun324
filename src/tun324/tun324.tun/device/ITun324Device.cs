@@ -25,7 +25,7 @@ namespace tun324.tun.device
         /// <param name="info"></param>
         /// <param name="error"></param>
         /// <returns></returns>
-        public bool Setup(LinkerTunDeviceSetupInfo info, out string error);
+        public bool Setup(Tun324TunDeviceSetupInfo info, out string error);
         /// <summary>
         /// 关闭
         /// </summary>
@@ -46,12 +46,12 @@ namespace tun324.tun.device
         /// 添加路由
         /// </summary>
         /// <param name="ips"></param>
-        public void AddRoute(LinkerTunDeviceRouteItem[] ips);
+        public void AddRoute(Tun324TunDeviceRouteItem[] ips);
         /// <summary>
         /// 删除路由
         /// </summary>
         /// <param name="ips"></param>
-        public void RemoveRoute(LinkerTunDeviceRouteItem[] ips);
+        public void RemoveRoute(Tun324TunDeviceRouteItem[] ips);
 
         /// <summary>
         /// 读取数据包
@@ -72,7 +72,7 @@ namespace tun324.tun.device
         public Task<bool> CheckAvailable(bool order = false);
     }
 
-    public sealed class LinkerTunDeviceSetupInfo
+    public sealed class Tun324TunDeviceSetupInfo
     {
         /// <summary>
         /// 设备名
@@ -105,21 +105,21 @@ namespace tun324.tun.device
     /// <summary>
     /// 网卡读取数据回调
     /// </summary>
-    public interface ILinkerTunDeviceCallback
+    public interface ITun324TunDeviceCallback
     {
         /// <summary>
         /// 回调
         /// </summary>
         /// <param name="packet"></param>
         /// <returns></returns>
-        public Task Callback(LinkerTunDevicPacket packet);
+        public Task Callback(Tun324TunDevicPacket packet);
     }
 
 
     /// <summary>
     /// 网卡端口转发
     /// </summary>
-    public sealed class LinkerTunDeviceForwardItem
+    public sealed class Tun324TunDeviceForwardItem
     {
         public IPAddress ListenAddr { get; set; } = IPAddress.Any;
         public int ListenPort { get; set; }
@@ -131,13 +131,13 @@ namespace tun324.tun.device
 
         public string Key => $"{ListenAddr}:{ListenPort}->{ConnectAddr}:{ConnectPort}";
     }
-    public sealed class LinkerTunDeviceForwardItemComparer : IEqualityComparer<LinkerTunDeviceForwardItem>
+    public sealed class Tun324TunDeviceForwardItemComparer : IEqualityComparer<Tun324TunDeviceForwardItem>
     {
-        public bool Equals(LinkerTunDeviceForwardItem x, LinkerTunDeviceForwardItem y)
+        public bool Equals(Tun324TunDeviceForwardItem x, Tun324TunDeviceForwardItem y)
         {
             return x.ListenPort == y.ListenPort && x.ConnectAddr.Equals(y.ConnectAddr) && x.ConnectPort == y.ConnectPort;
         }
-        public int GetHashCode(LinkerTunDeviceForwardItem obj)
+        public int GetHashCode(Tun324TunDeviceForwardItem obj)
         {
             return obj.ListenPort.GetHashCode() ^ obj.ConnectAddr.GetHashCode() ^ obj.ConnectPort;
         }
@@ -146,7 +146,7 @@ namespace tun324.tun.device
     /// <summary>
     /// 数据包
     /// </summary>
-    public sealed class LinkerTunDevicPacket
+    public sealed class Tun324TunDevicPacket
     {
         public byte[] Buffer { get; private set; }
         public int Offset { get; private set; }
@@ -186,7 +186,7 @@ namespace tun324.tun.device
         public bool IPV4Broadcast => Version == 4 && DstIp.IsCast();
         public bool IPV6Multicast => Version == 6 && (DstIp.Span[0] & 0xFF) == 0xFF;
 
-        public LinkerTunDevicPacket()
+        public Tun324TunDevicPacket()
         {
         }
         public void Unpacket(byte[] buffer, int offset, int length, int pad = 4)
@@ -235,7 +235,7 @@ namespace tun324.tun.device
     /// <summary>
     /// 添加路由项
     /// </summary>
-    public sealed class LinkerTunDeviceRouteItem
+    public sealed class Tun324TunDeviceRouteItem
     {
         /// <summary>
         /// IP
@@ -249,7 +249,7 @@ namespace tun324.tun.device
     /// <summary>
     /// 设备状态
     /// </summary>
-    public enum LinkerTunDeviceStatus
+    public enum Tun324TunDeviceStatus
     {
         /// <summary>
         /// 无

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using tun324.libs;
 
 namespace tun324.tun.device
@@ -24,7 +23,7 @@ namespace tun324.tun.device
         {
         }
 
-        public bool Setup(LinkerTunDeviceSetupInfo info, out string error)
+        public bool Setup(Tun324TunDeviceSetupInfo info, out string error)
         {
             error = string.Empty;
 
@@ -145,7 +144,7 @@ namespace tun324.tun.device
             CommandHelper.Linux(string.Empty, new string[] { $"ip link set dev {Name} mtu {value}" });
         }
 
-        public void AddRoute(LinkerTunDeviceRouteItem[] ips)
+        public void AddRoute(Tun324TunDeviceRouteItem[] ips)
         {
             string[] commands = ips.Select(item =>
             {
@@ -157,11 +156,11 @@ namespace tun324.tun.device
             if (commands.Length > 0)
             {
                 if (LoggerHelper.Instance.LoggerLevel <= LoggerTypes.DEBUG)
-                    LoggerHelper.Instance.Warning($"tuntap linux add route: {string.Join("\r\n", commands)}");
+                    LoggerHelper.Instance.Warning($"[LINUX TUN] linux add route: {string.Join("\r\n", commands)}");
                 CommandHelper.Linux(string.Empty, commands);
             }
         }
-        public void RemoveRoute(LinkerTunDeviceRouteItem[] ip)
+        public void RemoveRoute(Tun324TunDeviceRouteItem[] ip)
         {
             string[] commands = ip.Select(item =>
             {
@@ -173,7 +172,7 @@ namespace tun324.tun.device
             if (commands.Length > 0)
             {
                 if (LoggerHelper.Instance.LoggerLevel <= LoggerTypes.DEBUG)
-                    LoggerHelper.Instance.Warning($"tuntap linux del route: {string.Join("\r\n", commands)}");
+                    LoggerHelper.Instance.Warning($"[LINUX TUN] linux del route: {string.Join("\r\n", commands)}");
                 CommandHelper.Linux(string.Empty, commands);
             }
 

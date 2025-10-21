@@ -11,8 +11,8 @@ namespace tun324.tun
     /// </summary>
     public sealed class Tun324DeviceAdapter
     {
-        private ITun324Device linkerTunDevice;
-        private ILinkerTunDeviceCallback linkerTunDeviceCallback;
+        private ITun324Device Tun324TunDevice;
+        private ITun324TunDeviceCallback Tun324TunDeviceCallback;
         private CancellationTokenSource cancellationTokenSource;
 
         private string setupError = string.Empty;
@@ -24,17 +24,17 @@ namespace tun324.tun
 
 
         private readonly OperatingManager operatingManager = new OperatingManager();
-        public LinkerTunDeviceStatus Status
+        public Tun324TunDeviceStatus Status
         {
             get
             {
-                if (linkerTunDevice == null) return LinkerTunDeviceStatus.Normal;
+                if (Tun324TunDevice == null) return Tun324TunDeviceStatus.Normal;
 
                 return operatingManager.Operating
-                    ? LinkerTunDeviceStatus.Operating
-                    : linkerTunDevice.Running
-                        ? LinkerTunDeviceStatus.Running
-                        : LinkerTunDeviceStatus.Normal;
+                    ? Tun324TunDeviceStatus.Operating
+                    : Tun324TunDevice.Running
+                        ? Tun324TunDeviceStatus.Running
+                        : Tun324TunDeviceStatus.Normal;
             }
         }
 
@@ -51,26 +51,26 @@ namespace tun324.tun
         /// <summary>
         /// 初始化
         /// </summary>
-        /// <param name="linkerTunDeviceCallback">读取数据回调</param>
-        public bool Initialize(ILinkerTunDeviceCallback linkerTunDeviceCallback)
+        /// <param name="Tun324TunDeviceCallback">读取数据回调</param>
+        public bool Initialize(ITun324TunDeviceCallback Tun324TunDeviceCallback)
         {
-            this.linkerTunDeviceCallback = linkerTunDeviceCallback;
-            if (linkerTunDevice == null)
+            this.Tun324TunDeviceCallback = Tun324TunDeviceCallback;
+            if (Tun324TunDevice == null)
             {
                 if (OperatingSystem.IsWindows())
                 {
-                    linkerTunDevice = new Tun324WinTunDevice();
+                    Tun324TunDevice = new Tun324WinTunDevice();
                     return true;
                 }
                 else if (OperatingSystem.IsLinux())
                 {
-                    linkerTunDevice = new Tun324LinuxTunDevice();
+                    Tun324TunDevice = new Tun324LinuxTunDevice();
                     return true;
                 }
 
                 else if (OperatingSystem.IsMacOS())
                 {
-                    linkerTunDevice = new Tun324OsxTunDevice();
+                    Tun324TunDevice = new Tun324OsxTunDevice();
                     return true;
                 }
 
@@ -80,13 +80,13 @@ namespace tun324.tun
         /// <summary>
         /// 初始化
         /// </summary>
-        /// <param name="linkerTunDevice">网卡实现</param>
-        /// <param name="linkerTunDeviceCallback">读取数据回调</param>
+        /// <param name="Tun324TunDevice">网卡实现</param>
+        /// <param name="Tun324TunDeviceCallback">读取数据回调</param>
         /// <returns></returns>
-        public bool Initialize(ITun324Device linkerTunDevice, ILinkerTunDeviceCallback linkerTunDeviceCallback)
+        public bool Initialize(ITun324Device Tun324TunDevice, ITun324TunDeviceCallback Tun324TunDeviceCallback)
         {
-            this.linkerTunDevice = linkerTunDevice;
-            this.linkerTunDeviceCallback = linkerTunDeviceCallback;
+            this.Tun324TunDevice = Tun324TunDevice;
+            this.Tun324TunDeviceCallback = Tun324TunDeviceCallback;
             return true;
         }
 
@@ -94,7 +94,7 @@ namespace tun324.tun
         /// 开启网卡
         /// </summary>
         /// <param name="info">网卡信息</param>
-        public bool Setup(LinkerTunDeviceSetupInfo info)
+        public bool Setup(Tun324TunDeviceSetupInfo info)
         {
             if (operatingManager.StartOperation() == false)
             {
@@ -103,19 +103,19 @@ namespace tun324.tun
             }
             try
             {
-                if (linkerTunDevice == null)
+                if (Tun324TunDevice == null)
                 {
                     setupError = $"{System.Runtime.InteropServices.RuntimeInformation.OSDescription} not support";
                     return false;
                 }
                 this.address = info.Address;
                 this.prefixLength = info.PrefixLength;
-                linkerTunDevice.Setup(info, out setupError);
+                Tun324TunDevice.Setup(info, out setupError);
                 if (string.IsNullOrWhiteSpace(setupError) == false)
                 {
                     return false;
                 }
-                linkerTunDevice.SetMtu(info.Mtu);
+                Tun324TunDevice.SetMtu(info.Mtu);
                 Read();
 
                 lanSrcProxy.Setup(address, prefixLength, info.Proxy, ref setupError);
@@ -138,7 +138,7 @@ namespace tun324.tun
         /// </summary>
         public bool Shutdown()
         {
-            if (linkerTunDevice == null)
+            if (Tun324TunDevice == null)
             {
                 return false;
             }
@@ -150,7 +150,7 @@ namespace tun324.tun
             try
             {
                 cancellationTokenSource?.Cancel();
-                linkerTunDevice.Shutdown();
+                Tun324TunDevice.Shutdown();
                 lanSrcProxy.Shutdown();
             }
             catch (Exception)
@@ -168,37 +168,37 @@ namespace tun324.tun
         /// </summary>
         public void Refresh()
         {
-            if (linkerTunDevice == null)
+            if (Tun324TunDevice == null)
             {
                 return;
             }
-            linkerTunDevice.Refresh();
+            Tun324TunDevice.Refresh();
         }
 
         /// <summary>
         /// 添加路由
         /// </summary>
         /// <param name="ips"></param>
-        public void AddRoute(LinkerTunDeviceRouteItem[] ips)
+        public void AddRoute(Tun324TunDeviceRouteItem[] ips)
         {
-            if (linkerTunDevice == null)
+            if (Tun324TunDevice == null)
             {
                 return;
             }
-            if (linkerTunDevice.Running)
-                linkerTunDevice.AddRoute(ips);
+            if (Tun324TunDevice.Running)
+                Tun324TunDevice.AddRoute(ips);
         }
         /// <summary>
         /// 删除路由
         /// </summary>
         /// <param name="ips"></param>
-        public void RemoveRoute(LinkerTunDeviceRouteItem[] ips)
+        public void RemoveRoute(Tun324TunDeviceRouteItem[] ips)
         {
-            if (linkerTunDevice == null)
+            if (Tun324TunDevice == null)
             {
                 return;
             }
-            linkerTunDevice.RemoveRoute(ips);
+            Tun324TunDevice.RemoveRoute(ips);
         }
 
         public void AddHooks(List<ITun324PacketHook> hooks)
@@ -214,12 +214,12 @@ namespace tun324.tun
             TimerHelper.Async(async () =>
             {
                 cancellationTokenSource = new CancellationTokenSource();
-                LinkerTunDevicPacket packet = new LinkerTunDevicPacket();
+                Tun324TunDevicPacket packet = new Tun324TunDevicPacket();
                 while (cancellationTokenSource.IsCancellationRequested == false)
                 {
                     try
                     {
-                        byte[] buffer = linkerTunDevice.Read(out int length);
+                        byte[] buffer = Tun324TunDevice.Read(out int length);
                         if (length == 0)
                         {
                             if (LoggerHelper.Instance.LoggerLevel <= LoggerTypes.DEBUG)
@@ -234,26 +234,26 @@ namespace tun324.tun
                             continue;
                         }
 
-                        LinkerTunPacketHookFlags flags = LinkerTunPacketHookFlags.Next | LinkerTunPacketHookFlags.Send;
+                        Tun324TunPacketHookFlags flags = Tun324TunPacketHookFlags.Next | Tun324TunPacketHookFlags.Send;
                         for (int i = 0; i < readHooks.Length; i++)
                         {
-                            (LinkerTunPacketHookFlags addFlags, LinkerTunPacketHookFlags delFlags) = readHooks[i].Read(packet.RawPacket);
+                            (Tun324TunPacketHookFlags addFlags, Tun324TunPacketHookFlags delFlags) = readHooks[i].Read(packet.RawPacket);
                             flags |= addFlags;
                             flags &= ~delFlags;
-                            if ((flags & LinkerTunPacketHookFlags.Next) != LinkerTunPacketHookFlags.Next)
+                            if ((flags & Tun324TunPacketHookFlags.Next) != Tun324TunPacketHookFlags.Next)
                             {
                                 break;
                             }
                         }
                         ChecksumHelper.ChecksumWithZero(packet.RawPacket);
 
-                        if ((flags & LinkerTunPacketHookFlags.WriteBack) == LinkerTunPacketHookFlags.WriteBack)
+                        if ((flags & Tun324TunPacketHookFlags.WriteBack) == Tun324TunPacketHookFlags.WriteBack)
                         {
-                            linkerTunDevice.Write(packet.RawPacket);
+                            Tun324TunDevice.Write(packet.RawPacket);
                         }
-                        if ((flags & LinkerTunPacketHookFlags.Send) == LinkerTunPacketHookFlags.Send)
+                        if ((flags & Tun324TunPacketHookFlags.Send) == Tun324TunPacketHookFlags.Send)
                         {
-                            await linkerTunDeviceCallback.Callback(packet).ConfigureAwait(false);
+                            await Tun324TunDeviceCallback.Callback(packet).ConfigureAwait(false);
                         }
                     }
                     catch (Exception ex)
@@ -275,24 +275,24 @@ namespace tun324.tun
         {
             uint dstIp = VerifyPacket(buffer);
 
-            if (Status != LinkerTunDeviceStatus.Running || dstIp == 0)
+            if (Status != Tun324TunDeviceStatus.Running || dstIp == 0)
             {
                 return false;
             }
-            LinkerTunPacketHookFlags flags = LinkerTunPacketHookFlags.Next | LinkerTunPacketHookFlags.Write;
+            Tun324TunPacketHookFlags flags = Tun324TunPacketHookFlags.Next | Tun324TunPacketHookFlags.Write;
             for (int i = 0; i < writeHooks.Length; i++)
             {
-                (LinkerTunPacketHookFlags addFlags, LinkerTunPacketHookFlags delFlags) = await writeHooks[i].WriteAsync(buffer, dstIp, srcId).ConfigureAwait(false);
+                (Tun324TunPacketHookFlags addFlags, Tun324TunPacketHookFlags delFlags) = await writeHooks[i].WriteAsync(buffer, dstIp, srcId).ConfigureAwait(false);
                 flags |= addFlags;
                 flags &= ~delFlags;
-                if ((flags & LinkerTunPacketHookFlags.Next) != LinkerTunPacketHookFlags.Next)
+                if ((flags & Tun324TunPacketHookFlags.Next) != Tun324TunPacketHookFlags.Next)
                 {
                     break;
                 }
             }
             ChecksumHelper.ChecksumWithZero(buffer);
 
-            return (flags & LinkerTunPacketHookFlags.Write) != LinkerTunPacketHookFlags.Write || linkerTunDevice.Write(buffer);
+            return (flags & Tun324TunPacketHookFlags.Write) != Tun324TunPacketHookFlags.Write || Tun324TunDevice.Write(buffer);
         }
         private unsafe uint VerifyPacket(ReadOnlyMemory<byte> buffer)
         {
@@ -308,11 +308,11 @@ namespace tun324.tun
 
         public async Task<bool> CheckAvailable(bool order = false)
         {
-            if (linkerTunDevice == null)
+            if (Tun324TunDevice == null)
             {
                 return false;
             }
-            return await linkerTunDevice.CheckAvailable(order);
+            return await Tun324TunDevice.CheckAvailable(order);
         }
     }
 }

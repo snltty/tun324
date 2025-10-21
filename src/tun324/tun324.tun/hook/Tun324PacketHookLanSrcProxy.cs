@@ -5,11 +5,11 @@ namespace tun324.tun.hook
     internal sealed class Tun324PacketHookLanSrcProxy : ITun324PacketHook
     {
         public string Name => "SrcProxy";
-        public LinkerTunPacketHookLevel ReadLevel => LinkerTunPacketHookLevel.Low9;
-        public LinkerTunPacketHookLevel WriteLevel => LinkerTunPacketHookLevel.High9;
-        private readonly Tun324SrcProxy LinkerSrcProxy = new Tun324SrcProxy();
+        public Tun324TunPacketHookLevel ReadLevel => Tun324TunPacketHookLevel.Low9;
+        public Tun324TunPacketHookLevel WriteLevel => Tun324TunPacketHookLevel.High9;
+        private readonly Tun324SrcProxy Tun324SrcProxy = new Tun324SrcProxy();
 
-        public bool Running => LinkerSrcProxy.Running;
+        public bool Running => Tun324SrcProxy.Running;
 
         public Tun324PacketHookLanSrcProxy()
         {
@@ -17,13 +17,13 @@ namespace tun324.tun.hook
 
         public void Setup(IPAddress address, byte prefixLength,string proxy, ref string error)
         {
-            LinkerSrcProxy.Setup(address, prefixLength, proxy, ref error);
+            Tun324SrcProxy.Setup(address, prefixLength, proxy, ref error);
         }
         public void Shutdown()
         {
             try
             {
-                LinkerSrcProxy.Shutdown();
+                Tun324SrcProxy.Shutdown();
             }
             catch (Exception)
             {
@@ -31,17 +31,17 @@ namespace tun324.tun.hook
             GC.Collect();
         }
 
-        public (LinkerTunPacketHookFlags add, LinkerTunPacketHookFlags del) Read(ReadOnlyMemory<byte> packet)
+        public (Tun324TunPacketHookFlags add, Tun324TunPacketHookFlags del) Read(ReadOnlyMemory<byte> packet)
         {
-            if (LinkerSrcProxy.Read(packet))
+            if (Tun324SrcProxy.Read(packet))
             {
-                return (LinkerTunPacketHookFlags.None, LinkerTunPacketHookFlags.None);
+                return (Tun324TunPacketHookFlags.None, Tun324TunPacketHookFlags.None);
             }
-            return (LinkerTunPacketHookFlags.WriteBack, LinkerTunPacketHookFlags.Next | LinkerTunPacketHookFlags.Send);
+            return (Tun324TunPacketHookFlags.WriteBack, Tun324TunPacketHookFlags.Next | Tun324TunPacketHookFlags.Send);
         }
-        public async ValueTask<(LinkerTunPacketHookFlags add, LinkerTunPacketHookFlags del)> WriteAsync(ReadOnlyMemory<byte> packet, uint originDstIp, string srcId)
+        public async ValueTask<(Tun324TunPacketHookFlags add, Tun324TunPacketHookFlags del)> WriteAsync(ReadOnlyMemory<byte> packet, uint originDstIp, string srcId)
         {
-            return await ValueTask.FromResult((LinkerTunPacketHookFlags.None, LinkerTunPacketHookFlags.None));
+            return await ValueTask.FromResult((Tun324TunPacketHookFlags.None, Tun324TunPacketHookFlags.None));
         }
     }
 }

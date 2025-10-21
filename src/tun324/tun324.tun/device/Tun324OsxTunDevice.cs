@@ -28,7 +28,7 @@ namespace tun324.tun.device
         {
         }
 
-        public bool Setup(LinkerTunDeviceSetupInfo info, out string error)
+        public bool Setup(Tun324TunDeviceSetupInfo info, out string error)
         {
             error = string.Empty;
 
@@ -230,7 +230,7 @@ namespace tun324.tun.device
             }
         }
 
-        public void AddRoute(LinkerTunDeviceRouteItem[] routes)
+        public void AddRoute(Tun324TunDeviceRouteItem[] routes)
         {
             if (routes == null || routes.Length == 0) return;
 
@@ -247,7 +247,7 @@ namespace tun324.tun.device
             }
         }
 
-        public void RemoveRoute(LinkerTunDeviceRouteItem[] routes)
+        public void RemoveRoute(Tun324TunDeviceRouteItem[] routes)
         {
             if (routes == null || routes.Length == 0) return;
 

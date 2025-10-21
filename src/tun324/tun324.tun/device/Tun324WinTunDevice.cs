@@ -28,7 +28,7 @@ namespace tun324.tun.device
         {
         }
 
-        public bool Setup(LinkerTunDeviceSetupInfo info, out string error)
+        public bool Setup(Tun324TunDeviceSetupInfo info, out string error)
         {
             name = info.Name;
             address = info.Address;
@@ -191,7 +191,7 @@ namespace tun324.tun.device
             });
         }
 
-        public void AddRoute(LinkerTunDeviceRouteItem[] ips)
+        public void AddRoute(Tun324TunDeviceRouteItem[] ips)
         {
             if (interfaceNumber > 0)
             {
@@ -206,12 +206,12 @@ namespace tun324.tun.device
                 if (commands.Length > 0)
                 {
                     if (LoggerHelper.Instance.LoggerLevel <= LoggerTypes.DEBUG)
-                        LoggerHelper.Instance.Warning($"tuntap win add route: {string.Join("\r\n", commands)}");
+                        LoggerHelper.Instance.Warning($"[WIN TUN] win add route: {string.Join("\r\n", commands)}");
                     CommandHelper.Windows(string.Empty, commands);
                 }
             }
         }
-        public void RemoveRoute(LinkerTunDeviceRouteItem[] ips)
+        public void RemoveRoute(Tun324TunDeviceRouteItem[] ips)
         {
             string[] commands = ips.Select(item =>
             {
@@ -223,7 +223,7 @@ namespace tun324.tun.device
             if (commands.Length > 0)
             {
                 if (LoggerHelper.Instance.LoggerLevel <= LoggerTypes.DEBUG)
-                    LoggerHelper.Instance.Warning($"tuntap win del route: {string.Join("\r\n", commands)}");
+                    LoggerHelper.Instance.Warning($"[WIN TUN] win del route: {string.Join("\r\n", commands)}");
                 CommandHelper.Windows(string.Empty, commands.ToArray());
             }
         }
@@ -346,12 +346,12 @@ namespace tun324.tun.device
         }
         private void InterfaceOrder(NetworkInterface[] interfaces)
         {
-            NetworkInterface linker = interfaces.FirstOrDefault(c => c.Name == Name || c.Description == $"{Name} Tunnel" || c.Name.Contains(Name));
+            NetworkInterface Tun324 = interfaces.FirstOrDefault(c => c.Name == Name || c.Description == $"{Name} Tunnel" || c.Name.Contains(Name));
             NetworkInterface first = interfaces.FirstOrDefault();
 
-            if (linker != null && linker.Name != first.Name)
+            if (Tun324 != null && Tun324.Name != first.Name)
             {
-                UnicastIPAddressInformation firstIpv4 = linker.GetIPProperties().UnicastAddresses.FirstOrDefault(c => c.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
+                UnicastIPAddressInformation firstIpv4 = Tun324.GetIPProperties().UnicastAddresses.FirstOrDefault(c => c.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork);
                 if (firstIpv4 == null || firstIpv4.Address == null || firstIpv4.Address.Equals(address) == false)
                 {
                     return;

@@ -32,12 +32,14 @@ namespace tun324.tun.proxy
 
         public async Task ConnectAsync(Socket src, IPEndPoint ep)
         {
-            byte[] buffer = ArrayPool<byte>.Shared.Rent(8 * 1024);
-            byte[] buffer1 = ArrayPool<byte>.Shared.Rent(8 * 1024);
+            byte[] buffer = ArrayPool<byte>.Shared.Rent(1 * 1024 * 1024);
+            byte[] buffer1 = ArrayPool<byte>.Shared.Rent(1 * 1024 * 1024);
 
             Socket dst = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
             {
+                if (LoggerHelper.Instance.LoggerLevel <= LoggerTypes.DEBUG)
+                    LoggerHelper.Instance.Info($"[Socks5] connect {ep} with socks server {server}");
                 await dst.ConnectAsync(server);
 
                 int length = 0;
@@ -97,7 +99,8 @@ namespace tun324.tun.proxy
             }
             catch (Exception ex)
             {
-                LoggerHelper.Instance.Error($"[Socks5] ex {ex}");
+                if (LoggerHelper.Instance.LoggerLevel <= LoggerTypes.DEBUG)
+                    LoggerHelper.Instance.Error($"[Socks5] ex {ex}");
             }
             finally
             {
@@ -120,9 +123,7 @@ namespace tun324.tun.proxy
             catch (Exception ex)
             {
                 if (LoggerHelper.Instance.LoggerLevel <= LoggerTypes.DEBUG)
-                {
-                    LoggerHelper.Instance.Error(ex);
-                }
+                    LoggerHelper.Instance.Error($"[Socks5] ex {ex}");
             }
             finally
             {

@@ -1,10 +1,50 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFrameworks>net8.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<PublishAot>true</PublishAot>
+		<JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+		<EnablePreviewFeatures>True</EnablePreviewFeatures>
+		<Title>tun324 tun</Title>
+		<Authors>tun324</Authors>
+		<Company>snltty</Company>
+		<Description>tun324 tun</Description>
+		<Copyright>snltty</Copyright>
+		<PackageProjectUrl>https://github.com/snltty/tun324</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/snltty/tun324</RepositoryUrl>
+		<PackageReleaseNotes>tun324 tun</PackageReleaseNotes>
+		<Version>1.0.0</Version>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<FileVersion>1.0.0</FileVersion>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DebugType>full</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+		<Optimize>True</Optimize>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\tun324.tun\tun324.tun.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="wintun.dll">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>
