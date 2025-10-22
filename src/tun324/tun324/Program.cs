@@ -126,26 +126,26 @@ namespace tun324
             {
                 switch (args[i])
                 {
-                    case "name":
+                    case "--name":
                         Name = args[++i];
                         break;
-                    case "ip":
+                    case "--ip":
                         {
                             (IPAddress ip, byte prefixlength) = ParseCidr(args[++i]);
                             Address = ip;
                             PrefixLength = prefixlength;
                         }
                         break;
-                    case "guid":
+                    case "--guid":
                         Guid = Guid.Parse(args[++i]);
                         break;
-                    case "mtu":
+                    case "--mtu":
                         Mtu = int.Parse(args[++i]);
                         break;
-                    case "proxy":
+                    case "--proxy":
                         Proxy = args[++i];
                         break;
-                    case "route":
+                    case "--route":
                         {
                             (IPAddress ip, byte prefixlength) = ParseCidr(args[++i]);
                             Routes.Add(new Tun324TunDeviceRouteItem { Address = ip, PrefixLength = prefixlength });

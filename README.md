@@ -21,9 +21,9 @@ High-performance, TUN device  Layer 3 IP packets redirect  to  Layer 4 TCP socke
 tun324.exe --name tun324 --ip 10.18.18.2/24 --proxy socks5://127.0.0.1:1080 
 ```
 
-1. **--name tun324** 名称
-1. **--ip 10.18.18.2/24** ip掩码
-1. **--guid 2ef1a78e-9579-4214-bbc1-5dc556b59042** windows wintun 的GUID，默认 2ef1a78e-9579-4214-bbc1-5dc556b59042
-1. **--mtu 1420** MTU
-1. **--proxy socks5://127.0.0.1:1080** 代理地址
-1. **--route** 路由
+1. **name**：`tun324`，名称
+1. **ip**：`10.18.18.2/24`，ip掩码
+1. **guid**：`2ef1a78e-9579-4214-bbc1-5dc556b59042`，windows wintun的GUID，默认2ef1a78e-9579-4214-bbc1-5dc556b59042
+1. **mtu**：`1420`，MTU，默认1420
+1. **proxy**：`socks5://127.0.0.1:1080`，代理地址
+1. **route**：`192.168.1.0/24`，路由，可以多条
