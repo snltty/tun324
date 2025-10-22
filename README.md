@@ -1,7 +1,7 @@
 <div align="center">
 <p><img src="./readme/logo.png" height="150"></p> 
 
-# TUN324
+# TUN324、Layer 3 to Layer 4
 
 [![Stars](https://img.shields.io/github/stars/snltty/tun324?style=flat)](https://github.com/snltty/tun324)
 [![Forks](https://img.shields.io/github/forks/snltty/tun324?style=flat)](https://github.com/snltty/tun324)
@@ -12,10 +12,10 @@
 
 </div>
 
-# Layer 3 to Layer 4
+# 1、概述
 High-performance, TUN device  Layer 3 IP packets redirect  to  Layer 4 TCP socket. 高性能，tun 设备三层IP包重定向为四层socket。
 
-# 参数
+# 2、参数
 
 ```
 tun324.exe --proxy socks5://127.0.0.1:1080 --route 192.168.1.0/24
