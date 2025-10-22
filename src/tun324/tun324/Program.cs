@@ -11,22 +11,32 @@ namespace tun324
         {
             LoggerConsole();
 
+            ArgInfo info = ArgInfo.ParseArg(args);
+            if (string.IsNullOrWhiteSpace(info.Proxy))
+            {
+                LoggerHelper.Instance.Error($"[Args] please set proxy url");
+                return;
+            }
+            if (IPAddress.Any.Equals(info.Address))
+            {
+                LoggerHelper.Instance.Error($"[Args] please set ip");
+                return;
+            }
+
             Tun324DeviceAdapter adapter = new Tun324DeviceAdapter();
             adapter.Initialize(new Tun324TunDeviceCallback());
             adapter.Setup(new Tun324TunDeviceSetupInfo
             {
-                Address = IPAddress.Parse("172.18.18.2"),
-                PrefixLength = 24,
-                Mtu = 65535,
+                Address = info.Address,
+                PrefixLength = info.PrefixLength,
+                Mtu = info.Mtu,
 
-                Guid = Guid.Parse("2ef1a78e-9579-4214-bbc1-5dc556b59042"),
-                Name = "tun324",
+                Guid = info.Guid,
+                Name = info.Name,
 
-                Proxy = "socks5://172.25.16.239:12345"
+                Proxy = info.Proxy
             });
-            adapter.AddRoute(new[] {
-                new Tun324TunDeviceRouteItem { Address = IPAddress.Parse("169.254.86.78"), PrefixLength = 32 }
-            });
+            adapter.AddRoute(info.Routes.ToArray());
 
             Console.ReadLine();
         }
@@ -65,6 +75,99 @@ namespace tun324
         public async Task Callback(Tun324TunDevicPacket packet)
         {
             await Task.CompletedTask;
+        }
+    }
+
+
+    sealed class ArgInfo
+    {
+        /// <summary>
+        /// 设备名
+        /// </summary>
+        public string Name { get; set; } = "tun324";
+        /// <summary>
+        /// IP地址
+        /// </summary>
+        public IPAddress Address { get; set; } = IPAddress.Any;
+        /// <summary>
+        /// 前缀长度
+        /// </summary>
+        public byte PrefixLength { get; set; }
+        /// <summary>
+        /// GUID 仅windows
+        /// </summary>
+        public Guid Guid { get; set; } = Guid.Parse("2ef1a78e-9579-4214-bbc1-5dc556b59042");
+
+        /// <summary>
+        /// MTU
+        /// </summary>
+        public int Mtu { get; set; } = 1420;
+
+        /// <summary>
+        /// 代理地址
+        /// </summary>
+        public string Proxy { get; set; } = string.Empty;
+
+        /// <summary>
+        /// 路由
+        /// </summary>
+        public List<Tun324TunDeviceRouteItem> Routes { get; set; } = new List<Tun324TunDeviceRouteItem>();
+
+
+        public static ArgInfo ParseArg(string[] args)
+        {
+            ArgInfo info = new ArgInfo();
+            info.ParseArgInternal(args);
+            return info;
+        }
+        private void ParseArgInternal(string[] args)
+        {
+            for (int i = 0; i < args.Length; i++)
+            {
+                switch (args[i])
+                {
+                    case "name":
+                        Name = args[++i];
+                        break;
+                    case "ip":
+                        {
+                            (IPAddress ip, byte prefixlength) = ParseCidr(args[++i]);
+                            Address = ip;
+                            PrefixLength = prefixlength;
+                        }
+                        break;
+                    case "guid":
+                        Guid = Guid.Parse(args[++i]);
+                        break;
+                    case "mtu":
+                        Mtu = int.Parse(args[++i]);
+                        break;
+                    case "proxy":
+                        Proxy = args[++i];
+                        break;
+                    case "route":
+                        {
+                            (IPAddress ip, byte prefixlength) = ParseCidr(args[++i]);
+                            Routes.Add(new Tun324TunDeviceRouteItem { Address = ip, PrefixLength = prefixlength });
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        private (IPAddress ip, byte prefixlength) ParseCidr(string str)
+        {
+            try
+            {
+                string[] arr = str.Split('/');
+                if (arr.Length == 1) return (IPAddress.Parse(arr[0]), 24);
+                return (IPAddress.Parse(arr[0]), byte.Parse(arr[1]));
+            }
+            catch (Exception)
+            {
+            }
+            return (IPAddress.Any, 0);
         }
     }
 }
