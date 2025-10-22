@@ -88,11 +88,11 @@ namespace tun324
         /// <summary>
         /// IP地址
         /// </summary>
-        public IPAddress Address { get; set; } = IPAddress.Any;
+        public IPAddress Address { get; set; } = IPAddress.Parse("10.18.18.2");
         /// <summary>
         /// 前缀长度
         /// </summary>
-        public byte PrefixLength { get; set; }
+        public byte PrefixLength { get; set; } = 24;
         /// <summary>
         /// GUID 仅windows
         /// </summary>
