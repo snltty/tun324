@@ -18,7 +18,7 @@ High-performance, TUN device  Layer 3 IP packets redirect  to  Layer 4 TCP socke
 # 参数
 
 ```
-tun324.exe --name tun324 --ip 10.18.18.2/24 --proxy socks5://127.0.0.1:1080 
+tun324.exe --proxy socks5://127.0.0.1:1080 --route 192.168.1.0/24
 ```
 
 1. **name:** `tun324`名称, ✔
