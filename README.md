@@ -33,4 +33,4 @@ tun324.exe --proxy socks5://127.0.0.1:1080 --route 192.168.1.0/24
 
 ## [⭐]星星历史
 
-[![Star History Chart](https://api.star-history.com/svg?repos=snltty/tun324&type=Date&theme=dark)](https://www.star-history.com/#snltty/tun324&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=snltty/tun324&type=Date)](https://www.star-history.com/#snltty/tun324&Date)
