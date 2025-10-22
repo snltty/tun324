@@ -12,10 +12,10 @@
 
 </div>
 
-# Layer 3 to Layer 4
+# [🪂]Layer 3 to Layer 4
 High-performance, TUN device  Layer 3 IP packets redirect  to  Layer 4 TCP socket. 高性能，tun 设备三层IP包重定向为四层socket。
 
-# 运行参数
+# [😂]运行参数
 
 ```
 tun324.exe --proxy socks5://127.0.0.1:1080 --route 192.168.1.0/24
@@ -30,3 +30,7 @@ tun324.exe --proxy socks5://127.0.0.1:1080 --route 192.168.1.0/24
 6. **route:** 路由，可以多条，♥
     1. 可以多条
     2. 格式: `192.168.1.0/24`
+
+## [⭐]星星历史
+
+[![Star History Chart](https://api.star-history.com/svg?repos=snltty/tun324&type=Date&theme=dark)](https://www.star-history.com/#snltty/tun324&Date)
